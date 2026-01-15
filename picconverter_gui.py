@@ -4,10 +4,20 @@ PicConverter GUI - Bildkonvertierungs-Tool mit grafischer Benutzeroberfläche
 """
 
 import os
+import sys
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 from pathlib import Path
-from PIL import Image, ImageTk
+from PIL import Image
+try:
+    from PIL import ImageTk
+except ImportError:
+    print("Fehler: ImageTk konnte nicht importiert werden.", file=sys.stderr)
+    print("\nBitte installieren Sie das python3-pillow-tk Paket:", file=sys.stderr)
+    print("  sudo dnf install python3-pillow-tk", file=sys.stderr)
+    print("\nOder mit pip:", file=sys.stderr)
+    print("  pip install Pillow[tk]", file=sys.stderr)
+    sys.exit(1)
 import threading
 
 
