@@ -18,13 +18,22 @@ except ImportError:
     print("\nOder mit pip:", file=sys.stderr)
     print("  pip install Pillow[tk]", file=sys.stderr)
     sys.exit(1)
+# Versuche tkinterdnd2 zu importieren (optional für Drag & Drop)
+TkinterDnD = None
+DND_FILES = None
 try:
     from tkinterdnd2 import DND_FILES, TkinterDnD
+    # Teste ob es funktioniert
+    try:
+        test_root = TkinterDnD.Tk()
+        test_root.destroy()
+    except (RuntimeError, Exception):
+        # tkinterdnd2 ist installiert, aber funktioniert nicht (z.B. Tcl-Version-Konflikt)
+        TkinterDnD = None
+        DND_FILES = None
 except ImportError:
-    print("Warnung: tkinterdnd2 nicht gefunden. Drag & Drop wird nicht funktionieren.", file=sys.stderr)
-    print("Installieren Sie es mit: pip install tkinterdnd2", file=sys.stderr)
-    TkinterDnD = None
-    DND_FILES = None
+    # tkinterdnd2 ist nicht installiert
+    pass
 import threading
 
 
@@ -581,9 +590,13 @@ class PicConverterGUI:
 
 
 def main():
-    # Verwende TkinterDnD wenn verfügbar, sonst normales Tk
+    # Verwende TkinterDnD wenn verfügbar und funktionsfähig, sonst normales Tk
     if TkinterDnD:
-        root = TkinterDnD.Tk()
+        try:
+            root = TkinterDnD.Tk()
+        except (RuntimeError, Exception) as e:
+            print(f"Warnung: Drag & Drop nicht verfügbar ({e}). Verwende normale GUI.", file=sys.stderr)
+            root = tk.Tk()
     else:
         root = tk.Tk()
     app = PicConverterGUI(root)
