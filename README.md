@@ -12,16 +12,52 @@ Ein vielseitiges Bildkonvertierungs-Tool für Python, das sowohl über die Komma
 
 ## Installation
 
+### Systemanforderungen
+
+- Python 3.7 oder höher
+- tkinter (meist bereits mit Python installiert)
+
+### Installationsschritte
+
 1. Repository klonen:
 ```bash
-git clone https://github.com/IhrBenutzername/PicConverter.git
+git clone https://github.com/QG1o/PicConverter.git
 cd PicConverter
 ```
 
-2. Abhängigkeiten installieren:
+2. Systempakete installieren (für GUI-Version erforderlich):
+
+**Fedora/RHEL/CentOS:**
+```bash
+sudo dnf install python3-pillow python3-pillow-tk python3-tkinter
+```
+
+**Debian/Ubuntu:**
+```bash
+sudo apt-get install python3-pil python3-pil.imagetk python3-tk
+```
+
+**Arch Linux:**
+```bash
+sudo pacman -S python-pillow tk
+```
+
+**macOS (mit Homebrew):**
+```bash
+brew install python-tk
+pip3 install Pillow
+```
+
+**Windows:**
+- Python sollte bereits tkinter enthalten
+- Installieren Sie Pillow mit: `pip install Pillow`
+
+3. Python-Abhängigkeiten installieren:
 ```bash
 pip install -r requirements.txt
 ```
+
+**Hinweis:** Für die GUI-Version wird zusätzlich `python3-pillow-tk` (oder `python3-pil.imagetk`) benötigt, damit die Bildvorschau funktioniert.
 
 ## Verwendung
 
