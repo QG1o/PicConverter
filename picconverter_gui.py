@@ -325,8 +325,12 @@ class PicConverterGUI:
             preview_img = self.image.copy()
             preview_img.thumbnail(preview_size, Image.Resampling.LANCZOS)
             
+            # Stelle sicher, dass das Fenster existiert bevor ImageTk verwendet wird
+            self.root.update_idletasks()
             self.preview_image = ImageTk.PhotoImage(preview_img)
             self.preview_label.config(image=self.preview_image, text="")
+            # Wichtig: Referenz behalten, damit das Bild nicht garbage collected wird
+            self.preview_label.image = self.preview_image
             
             # Eingabelabel aktualisieren
             self.input_label.config(text=self.input_path.name)
