@@ -8,6 +8,7 @@ Ein vielseitiges Bildkonvertierungs-Tool für Python, das sowohl über die Komma
 - ✅ **Anpassbare Qualität/Kompression**: Optimieren Sie die Dateigröße nach Ihren Bedürfnissen
 - ✅ **Auflösungsänderung**: Passen Sie die Bildgröße an
 - ✅ **Größenprognose**: Sehen Sie die geschätzte Ausgabegröße vor der Konvertierung
+- ✅ **Drag & Drop**: Ziehen Sie Bilddateien einfach in die GUI
 - ✅ **Zwei Benutzeroberflächen**: CLI für Automatisierung und GUI für einfache Bedienung
 
 ## Installation
@@ -70,7 +71,9 @@ python picconverter_gui.py
 ```
 
 **Bedienung:**
-1. Klicken Sie auf "Datei auswählen" und wählen Sie ein Bild aus
+1. **Datei laden**: 
+   - Klicken Sie auf "Datei auswählen" und wählen Sie ein Bild aus, ODER
+   - Ziehen Sie eine Bilddatei per Drag & Drop in den markierten Bereich
 2. Wählen Sie das gewünschte Ausgabeformat
 3. Passen Sie die Qualität/Kompression an (falls verfügbar)
 4. Geben Sie optional eine neue Auflösung ein

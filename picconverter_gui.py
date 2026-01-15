@@ -18,6 +18,13 @@ except ImportError:
     print("\nOder mit pip:", file=sys.stderr)
     print("  pip install Pillow[tk]", file=sys.stderr)
     sys.exit(1)
+try:
+    from tkinterdnd2 import DND_FILES, TkinterDnD
+except ImportError:
+    print("Warnung: tkinterdnd2 nicht gefunden. Drag & Drop wird nicht funktionieren.", file=sys.stderr)
+    print("Installieren Sie es mit: pip install tkinterdnd2", file=sys.stderr)
+    TkinterDnD = None
+    DND_FILES = None
 import threading
 
 
@@ -92,6 +99,30 @@ class PicConverterGUI:
         self.input_label.grid(row=0, column=0, sticky=tk.W, padx=(0, 10))
         
         ttk.Button(input_frame, text="Datei auswählen", command=self.select_file).grid(row=0, column=1)
+        
+        # Drag & Drop Bereich hinzufügen
+        if TkinterDnD:
+            drop_label = tk.Label(input_frame, 
+                                 text="📁 Datei hierher ziehen (Drag & Drop)", 
+                                 bg="#e0e0e0", 
+                                 relief=tk.RAISED,
+                                 padx=20, 
+                                 pady=10,
+                                 font=("Arial", 10))
+            drop_label.grid(row=1, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(10, 0))
+            
+            # Drag & Drop registrieren
+            drop_label.drop_target_register(DND_FILES)
+            drop_label.dnd_bind('<<Drop>>', self.on_drop)
+            
+            # Visuelles Feedback beim Überfahren
+            def on_enter(event):
+                drop_label.config(bg="#c0c0c0", relief=tk.SUNKEN)
+            def on_leave(event):
+                drop_label.config(bg="#e0e0e0", relief=tk.RAISED)
+            
+            drop_label.bind("<Enter>", on_enter)
+            drop_label.bind("<Leave>", on_leave)
         
         # Bildvorschau
         preview_frame = ttk.LabelFrame(main_frame, text="Vorschau", padding="10")
@@ -231,6 +262,28 @@ class PicConverterGUI:
         if filename:
             self.input_path = Path(filename)
             self.load_image()
+    
+    def on_drop(self, event):
+        """Verarbeitet Drag & Drop Events"""
+        if not TkinterDnD:
+            messagebox.showwarning("Warnung", "Drag & Drop ist nicht verfügbar. Bitte installieren Sie tkinterdnd2.")
+            return
+        
+        # Dateipfad aus dem Event extrahieren
+        files = self.root.tk.splitlist(event.data)
+        if files:
+            file_path = Path(files[0])
+            
+            # Prüfen ob es eine Bilddatei ist
+            image_extensions = {'.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.tif', '.gif', '.webp', '.ico'}
+            if file_path.suffix.lower() in image_extensions:
+                if file_path.exists():
+                    self.input_path = file_path
+                    self.load_image()
+                else:
+                    messagebox.showerror("Fehler", f"Datei existiert nicht: {file_path}")
+            else:
+                messagebox.showwarning("Warnung", f"Keine unterstützte Bilddatei: {file_path.name}\n\nUnterstützte Formate: {', '.join(image_extensions)}")
             
     def load_image(self):
         try:
@@ -528,7 +581,11 @@ class PicConverterGUI:
 
 
 def main():
-    root = tk.Tk()
+    # Verwende TkinterDnD wenn verfügbar, sonst normales Tk
+    if TkinterDnD:
+        root = TkinterDnD.Tk()
+    else:
+        root = tk.Tk()
     app = PicConverterGUI(root)
     root.mainloop()
 
