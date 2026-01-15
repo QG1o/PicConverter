@@ -200,28 +200,6 @@ class PicConverterGUI:
         if filename:
             self.input_path = Path(filename)
             self.load_image()
-    
-    def on_drop(self, event):
-        """Verarbeitet Drag & Drop Events"""
-        if not TkinterDnD:
-            messagebox.showwarning("Warnung", "Drag & Drop ist nicht verfügbar. Bitte installieren Sie tkinterdnd2.")
-            return
-        
-        # Dateipfad aus dem Event extrahieren
-        files = self.root.tk.splitlist(event.data)
-        if files:
-            file_path = Path(files[0])
-            
-            # Prüfen ob es eine Bilddatei ist
-            image_extensions = {'.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.tif', '.gif', '.webp', '.ico'}
-            if file_path.suffix.lower() in image_extensions:
-                if file_path.exists():
-                    self.input_path = file_path
-                    self.load_image()
-                else:
-                    messagebox.showerror("Fehler", f"Datei existiert nicht: {file_path}")
-            else:
-                messagebox.showwarning("Warnung", f"Keine unterstützte Bilddatei: {file_path.name}\n\nUnterstützte Formate: {', '.join(image_extensions)}")
             
     def load_image(self):
         try:
