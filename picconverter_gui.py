@@ -519,15 +519,7 @@ class PicConverterGUI:
 
 
 def main():
-    # Verwende TkinterDnD wenn verfügbar und funktionsfähig, sonst normales Tk
-    if TkinterDnD:
-        try:
-            root = TkinterDnD.Tk()
-        except (RuntimeError, Exception) as e:
-            print(f"Warnung: Drag & Drop nicht verfügbar ({e}). Verwende normale GUI.", file=sys.stderr)
-            root = tk.Tk()
-    else:
-        root = tk.Tk()
+    root = tk.Tk()
     app = PicConverterGUI(root)
     root.mainloop()
 
