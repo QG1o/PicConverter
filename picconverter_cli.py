@@ -131,7 +131,7 @@ Unterstützte Formate: {', '.join(SUPPORTED_FORMATS.keys())}
 
 Beispiele:
   %(prog)s bild.jpg -f png -o ausgabe.png
-  %(prog)s bild.jpg -f jpg -q 90 -w 1920 -h 1080
+  %(prog)s bild.jpg -f jpg -q 90 -w 1920 --height 1080
   %(prog)s bild.png -f webp -q 85
         """
     )
@@ -147,7 +147,7 @@ Beispiele:
                        help='Qualität/Kompression (JPEG/WebP: 1-100, PNG: 0-9)')
     parser.add_argument('-w', '--width', type=int,
                        help='Breite der Ausgabedatei in Pixeln')
-    parser.add_argument('-h', '--height', type=int,
+    parser.add_argument('--height', type=int,
                        help='Höhe der Ausgabedatei in Pixeln')
     parser.add_argument('--estimate', action='store_true',
                        help='Zeigt geschätzte Ausgabegröße ohne zu konvertieren')

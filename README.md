@@ -95,13 +95,13 @@ python picconverter_cli.py bild.jpg -f png
 python picconverter_cli.py bild.jpg -f jpg -q 90
 
 # Konvertierung mit neuer Auflösung
-python picconverter_cli.py bild.jpg -f png -w 1920 -h 1080
+python picconverter_cli.py bild.jpg -f png -w 1920 --height 1080
 
 # Nur Größenprognose anzeigen (ohne Konvertierung)
 python picconverter_cli.py bild.jpg -f webp -q 85 --estimate
 
 # Alle Optionen kombiniert
-python picconverter_cli.py bild.png -f jpg -q 90 -w 1920 -h 1080 -o ausgabe.jpg
+python picconverter_cli.py bild.png -f jpg -q 90 -w 1920 --height 1080 -o ausgabe.jpg
 ```
 
 **Verfügbare Optionen:**
@@ -112,7 +112,7 @@ python picconverter_cli.py bild.png -f jpg -q 90 -w 1920 -h 1080 -o ausgabe.jpg
   - JPEG/WebP: 1-100 (Standard: 85)
   - PNG: 0-9 (Standard: 6)
 - `-w, --width`: Breite in Pixeln
-- `-h, --height`: Höhe in Pixeln
+- `--height`: Höhe in Pixeln (Hinweis: `-h` ist für Hilfe reserviert)
 - `--estimate`: Zeigt nur die geschätzte Ausgabegröße an
 
 ## Unterstützte Formate
