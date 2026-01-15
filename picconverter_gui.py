@@ -76,12 +76,19 @@ class PicConverterGUI:
         scrollbar = ttk.Scrollbar(self.root, orient="vertical", command=self.canvas.yview)
         scrollable_frame = ttk.Frame(self.canvas)
         
-        scrollable_frame.bind(
-            "<Configure>",
-            lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all"))
-        )
+        def update_scrollregion(event=None):
+            self.canvas.configure(scrollregion=self.canvas.bbox("all"))
         
-        self.canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        scrollable_frame.bind("<Configure>", update_scrollregion)
+        
+        # Canvas-Fenster erstellen und konfigurieren
+        canvas_window = self.canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        
+        def configure_canvas_width(event):
+            canvas_width = event.width
+            self.canvas.itemconfig(canvas_window, width=canvas_width)
+        
+        self.canvas.bind('<Configure>', configure_canvas_width)
         self.canvas.configure(yscrollcommand=scrollbar.set)
         
         # Canvas und Scrollbar platzieren
@@ -246,6 +253,10 @@ class PicConverterGUI:
                 self.canvas.yview_scroll(1, "units")
         self.canvas.bind_all("<Button-4>", _on_mousewheel_linux)
         self.canvas.bind_all("<Button-5>", _on_mousewheel_linux)
+        
+        # Scrollregion nach Setup aktualisieren
+        self.root.update_idletasks()
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
         
         # Initiale Format-Einstellung
         self.on_format_change()
