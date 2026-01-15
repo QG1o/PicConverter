@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PicConverter GUI - Modernes Bildkonvertierungs-Tool (ohne Drag & Drop)
+PicConverter GUI - Modernes Bildkonvertierungs-Tool
 """
 
 import os
@@ -58,19 +58,15 @@ COLORS = {
 class ModernButton(tk.Canvas):
     """Moderner Button mit Hover-Effekt"""
     def __init__(self, parent, text, command=None, **kwargs):
-        # Custom-Parameter extrahieren
+        super().__init__(parent, highlightthickness=0, **kwargs)
         self.command = command
         self.text = text
-        self.enabled = True
-        button_width = kwargs.pop('width', 140)
-        button_height = kwargs.pop('height', 40)
-        self.bg_color = kwargs.pop('bg', COLORS['accent'])
-        self.hover_color = kwargs.pop('hover_bg', COLORS['accent_hover'])
-        self.fg_color = kwargs.pop('fg', COLORS['bg'])
         
-        # Canvas initialisieren
-        super().__init__(parent, highlightthickness=0, width=button_width, 
-                        height=button_height, bg=COLORS['bg'], **kwargs)
+        # Standard-Größen
+        self.config(width=kwargs.get('width', 140), height=kwargs.get('height', 40))
+        self.bg_color = kwargs.get('bg', COLORS['accent'])
+        self.hover_color = kwargs.get('hover_bg', COLORS['accent_hover'])
+        self.fg_color = kwargs.get('fg', COLORS['bg'])
         
         self.draw_button()
         
@@ -81,7 +77,7 @@ class ModernButton(tk.Canvas):
         
     def draw_button(self, hover=False):
         self.delete('all')
-        color = self.hover_color if (hover and self.enabled) else self.bg_color
+        color = self.hover_color if hover else self.bg_color
         
         # Abgerundetes Rechteck
         x0, y0 = 0, 0
@@ -96,17 +92,15 @@ class ModernButton(tk.Canvas):
         self.create_rectangle(x0, y0+radius, x1, y1-radius, fill=color, outline=color)
         
         # Text
-        fg = self.fg_color if self.enabled else COLORS['fg']
-        self.create_text(x1/2, y1/2, text=self.text, fill=fg, 
+        self.create_text(x1/2, y1/2, text=self.text, fill=self.fg_color, 
                         font=('Segoe UI', 10, 'bold'))
         
     def on_click(self, event):
-        if self.command and self.enabled:
+        if self.command:
             self.command()
     
     def on_enter(self, event):
-        if self.enabled:
-            self.draw_button(hover=True)
+        self.draw_button(hover=True)
     
     def on_leave(self, event):
         self.draw_button(hover=False)
@@ -435,17 +429,12 @@ class PicConverterGUI:
     
     def update_convert_button_state(self):
         """Aktualisiert den Zustand des Konvertieren-Buttons"""
-        self.convert_button.enabled = self.convert_button_enabled
         if self.convert_button_enabled:
-            self.convert_button.bg_color = COLORS['success']
-            self.convert_button.hover_color = '#94e2d5'
+            self.convert_button.config(bg=COLORS['success'], state='normal')
         else:
-            self.convert_button.bg_color = COLORS['border']
-            self.convert_button.hover_color = COLORS['border']
-        self.convert_button.draw_button()
+            self.convert_button.config(bg=COLORS['border'], state='disabled')
     
     def select_file(self):
-        """Wählt eine Datei aus via Dialog"""
         filetypes = [
             ("Alle Bilder", "*.jpg *.jpeg *.png *.bmp *.tiff *.tif *.gif *.webp *.ico"),
             ("JPEG", "*.jpg *.jpeg"),
@@ -492,8 +481,8 @@ class PicConverterGUI:
             
             # Eingabelabel
             short_name = self.input_path.name
-            if len(short_name) > 50:
-                short_name = short_name[:47] + "..."
+            if len(short_name) > 40:
+                short_name = short_name[:37] + "..."
             self.input_label.config(text=f"✓ {short_name}",
                                    foreground=COLORS['success'])
             
