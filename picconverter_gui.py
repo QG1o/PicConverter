@@ -71,37 +71,13 @@ class PicConverterGUI:
         self.setup_ui()
         
     def setup_ui(self):
-        # Canvas mit Scrollbar für scrollbare GUI
-        self.canvas = tk.Canvas(self.root)
-        scrollbar = ttk.Scrollbar(self.root, orient="vertical", command=self.canvas.yview)
-        scrollable_frame = ttk.Frame(self.canvas)
-        
-        def update_scrollregion(event=None):
-            self.canvas.configure(scrollregion=self.canvas.bbox("all"))
-        
-        scrollable_frame.bind("<Configure>", update_scrollregion)
-        
-        # Canvas-Fenster erstellen und konfigurieren
-        canvas_window = self.canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        
-        def configure_canvas_width(event):
-            canvas_width = event.width
-            self.canvas.itemconfig(canvas_window, width=canvas_width)
-        
-        self.canvas.bind('<Configure>', configure_canvas_width)
-        self.canvas.configure(yscrollcommand=scrollbar.set)
-        
-        # Canvas und Scrollbar platzieren
-        self.canvas.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-        scrollbar.grid(row=0, column=1, sticky=(tk.N, tk.S))
+        # Hauptcontainer - einfache Version ohne Canvas
+        main_frame = ttk.Frame(self.root, padding="10")
+        main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
         
         # Grid-Konfiguration für Root-Fenster
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
-        
-        # Hauptcontainer (jetzt scrollable_frame statt main_frame)
-        main_frame = scrollable_frame
-        main_frame.configure(padding="10")
         
         # Titel
         title_label = ttk.Label(main_frame, text="PicConverter", font=("Arial", 18, "bold"))
@@ -239,24 +215,6 @@ class PicConverterGUI:
         # Spalten konfigurieren
         main_frame.columnconfigure(0, weight=1)
         settings_frame.columnconfigure(1, weight=1)
-        
-        # Canvas-Bindungen für Mausrad-Scrolling
-        def _on_mousewheel(event):
-            self.canvas.yview_scroll(int(-1*(event.delta/120)), "units")
-        self.canvas.bind_all("<MouseWheel>", _on_mousewheel)
-        
-        # Canvas-Bindungen für Linux (Button-4 und Button-5)
-        def _on_mousewheel_linux(event):
-            if event.num == 4:
-                self.canvas.yview_scroll(-1, "units")
-            elif event.num == 5:
-                self.canvas.yview_scroll(1, "units")
-        self.canvas.bind_all("<Button-4>", _on_mousewheel_linux)
-        self.canvas.bind_all("<Button-5>", _on_mousewheel_linux)
-        
-        # Scrollregion nach Setup aktualisieren
-        self.root.update_idletasks()
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
         
         # Initiale Format-Einstellung
         self.on_format_change()
