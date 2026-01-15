@@ -18,22 +18,6 @@ except ImportError:
     print("\nOder mit pip:", file=sys.stderr)
     print("  pip install Pillow[tk]", file=sys.stderr)
     sys.exit(1)
-# Versuche tkinterdnd2 zu importieren (optional für Drag & Drop)
-TkinterDnD = None
-DND_FILES = None
-try:
-    from tkinterdnd2 import DND_FILES, TkinterDnD
-    # Teste ob es funktioniert
-    try:
-        test_root = TkinterDnD.Tk()
-        test_root.destroy()
-    except (RuntimeError, Exception):
-        # tkinterdnd2 ist installiert, aber funktioniert nicht (z.B. Tcl-Version-Konflikt)
-        TkinterDnD = None
-        DND_FILES = None
-except ImportError:
-    # tkinterdnd2 ist nicht installiert
-    pass
 import threading
 
 
@@ -91,30 +75,6 @@ class PicConverterGUI:
         self.input_label.grid(row=0, column=0, sticky=tk.W, padx=(0, 10))
         
         ttk.Button(input_frame, text="Datei auswählen", command=self.select_file).grid(row=0, column=1)
-        
-        # Drag & Drop Bereich hinzufügen
-        if TkinterDnD:
-            drop_label = tk.Label(input_frame, 
-                                 text="📁 Datei hierher ziehen (Drag & Drop)", 
-                                 bg="#e0e0e0", 
-                                 relief=tk.RAISED,
-                                 padx=20, 
-                                 pady=10,
-                                 font=("Arial", 10))
-            drop_label.grid(row=1, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(10, 0))
-            
-            # Drag & Drop registrieren
-            drop_label.drop_target_register(DND_FILES)
-            drop_label.dnd_bind('<<Drop>>', self.on_drop)
-            
-            # Visuelles Feedback beim Überfahren
-            def on_enter(event):
-                drop_label.config(bg="#c0c0c0", relief=tk.SUNKEN)
-            def on_leave(event):
-                drop_label.config(bg="#e0e0e0", relief=tk.RAISED)
-            
-            drop_label.bind("<Enter>", on_enter)
-            drop_label.bind("<Leave>", on_leave)
         
         # Bildvorschau
         preview_frame = ttk.LabelFrame(main_frame, text="Vorschau", padding="10")
@@ -283,12 +243,8 @@ class PicConverterGUI:
             preview_img = self.image.copy()
             preview_img.thumbnail(preview_size, Image.Resampling.LANCZOS)
             
-            # Stelle sicher, dass das Fenster existiert bevor ImageTk verwendet wird
-            self.root.update_idletasks()
             self.preview_image = ImageTk.PhotoImage(preview_img)
             self.preview_label.config(image=self.preview_image, text="")
-            # Wichtig: Referenz behalten, damit das Bild nicht garbage collected wird
-            self.preview_label.image = self.preview_image
             
             # Eingabelabel aktualisieren
             self.input_label.config(text=self.input_path.name)
